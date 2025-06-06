@@ -1,6 +1,3 @@
-Sure! Here's a fun and cheerful game introduction for **Sheep Gone**, written in English with humorous details and a playful tone:
-
----
 
 **🐑 Sheep Gone – Break Out of Baaa-rison! 🚪**
 
