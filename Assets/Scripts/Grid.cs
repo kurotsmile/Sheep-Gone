@@ -41,7 +41,7 @@ public class Grid : MonoBehaviour {
 	
 	void OnPostRender()
 	{
-		CreateLineMaterial();
+		//CreateLineMaterial();
 		// set the current material
 		lineMaterial.SetPass( 0 );
 		
