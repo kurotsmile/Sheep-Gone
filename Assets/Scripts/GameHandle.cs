@@ -1,4 +1,6 @@
+using System;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameHandle : MonoBehaviour
 {
@@ -17,6 +19,13 @@ public class GameHandle : MonoBehaviour
     public GameObject panel_selectSheep;
     public GameObject panel_play;
     public GameObject panel_win;
+
+    [Header("Map Select Sheep")]
+    public GameObject[] ListSheepObj;
+    public String[] ListSheepName;
+    public GameObject ObjSheepArrowSelect;
+    private int currentSheepIndex = 0;
+    public Text txtNameSheepSelect;
 
     [Header("UI Select Level")]
     public Transform allItemSelectLevel;
@@ -140,15 +149,45 @@ public class GameHandle : MonoBehaviour
         this.ObjLevel.SetActive(false);
         this.cameraControl.editor = true;
         this.cameraControl.SetPivotPoint(new Vector3(0, 0, 0));
+        this.UpdateUISelectSheep();
     }
 
     public void OnBtn_next_sheep()
     {
+        this.currentSheepIndex++;
+        if (this.currentSheepIndex >= this.ListSheepObj.Length) this.currentSheepIndex = 0;
         this.carrot.play_sound_click();
+        this.UpdateUISelectSheep();
     }
-    
+
     public void OnBtn_prev_sheep()
     {
+        this.currentSheepIndex--;
+        if (this.currentSheepIndex < 0) this.currentSheepIndex = this.ListSheepObj.Length - 1;
         this.carrot.play_sound_click();
+        this.UpdateUISelectSheep();
+    }
+
+    private void UpdateUISelectSheep()
+    {
+        Vector3 pos_vec = new Vector3(
+            this.ListSheepObj[this.currentSheepIndex].transform.position.x,
+            this.ListSheepObj[this.currentSheepIndex].transform.position.y + 3f,
+            this.ListSheepObj[this.currentSheepIndex].transform.position.z
+        );
+        this.ObjSheepArrowSelect.transform.position = pos_vec;
+        this.ObjSheepArrowSelect.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
+        this.txtNameSheepSelect.text = this.ListSheepName[this.currentSheepIndex];
+    }
+
+    public void OnBtn_DoneSelectSheep()
+    {
+        this.carrot.play_sound_click();
+        this.ObjSheep.SetActive(true);
+        this.ObjViewSelectSheep.SetActive(false);
+        this.ObjLevel.SetActive(true);
+        this.cameraControl.editor = false;
+        this.panel_selectSheep.SetActive(false);
+        this.panel_home.SetActive(true);
     }
 }
