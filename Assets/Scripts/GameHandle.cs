@@ -197,6 +197,7 @@ public class GameHandle : MonoBehaviour
         this.play.UnPause();
     }
 
+    [ContextMenu("Show Win Panel")]
     public void ShowWin()
     {
         this.panel_play.SetActive(false);

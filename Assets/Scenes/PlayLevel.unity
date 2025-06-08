@@ -839,6 +839,7 @@ MonoBehaviour:
   icon_level_lock: {fileID: 21300000, guid: dc359c10c5c3dbc41b3a5c7d9094f415, type: 3}
   cameraControl: {fileID: 1438531319}
   audioBk: {fileID: 91795855}
+  index_sheep_temp_buy: -1
 --- !u!114 &91795854
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2310,7 +2311,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 91795853}
         m_TargetAssemblyTypeName: GameHandle, Assembly-CSharp
-        m_MethodName: OnBtn_ShowListLevel
+        m_MethodName: OnBtn_Home
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
