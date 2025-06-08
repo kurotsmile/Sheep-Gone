@@ -99,18 +99,26 @@ sealed public class Play : MonoBehaviour
         if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow))
         {
             dir = GetMovementDirection(KeyCode.W);
+            float cameraRotY = Camera.main.transform.rotation.eulerAngles.y;
+            this.ObjSheep.transform.rotation = Quaternion.Euler(0, cameraRotY, 0);
         }
         else if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow))
         {
             dir = GetMovementDirection(KeyCode.S);
+            float cameraRotY = Camera.main.transform.rotation.eulerAngles.y - 180f;
+            this.ObjSheep.transform.rotation = Quaternion.Euler(0, cameraRotY, 0);
         }
         else if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
         {
             dir = GetMovementDirection(KeyCode.A);
+            float cameraRotY = Camera.main.transform.rotation.eulerAngles.y - 90f;
+            this.ObjSheep.transform.rotation = Quaternion.Euler(0, cameraRotY, 0);
         }
         else if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
         {
             dir = GetMovementDirection(KeyCode.D);
+            float cameraRotY = Camera.main.transform.rotation.eulerAngles.y + 90f;
+            this.ObjSheep.transform.rotation = Quaternion.Euler(0, cameraRotY, 0);
         }
         else if (moved)
         {
