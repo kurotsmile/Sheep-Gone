@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.UI;
 using System;
 using System.Collections;
@@ -15,19 +15,16 @@ sealed public class Play : MonoBehaviour
     static int[][] directions = new int[][] { new int[] { 0, 1 }, new int[] { 1, 0 }, new int[] { 0, -1 }, new int[] { -1, 0 } };
 
     public GameObject GameplayCanvas;
-    public GameObject ErrorCanvas;
 
     public bool levelWon;
     public Text timeText;
     public Text levelText;
-    public Text errorText;
 
     private Level currentLevel;
     public Entity player;
     private bool levelLoaded = false;
     private bool inputReady;
     private bool gamePaused;
-    private bool errorOccured;
     private bool moved;
     private float levelTimer;
     private float cameraZoom = 35f;
@@ -58,7 +55,7 @@ sealed public class Play : MonoBehaviour
 
     void Update()
     {
-        if (!levelLoaded || gamePaused || errorOccured)
+        if (!levelLoaded || gamePaused)
             return;
 
         if (Input.GetKeyDown(KeyCode.Escape))
@@ -81,18 +78,20 @@ sealed public class Play : MonoBehaviour
             }
             if (currentLevel.LevelID == -2)
             {
-                Menu.returningFromUserLevel = true;
                 StartCoroutine(StartLevelWait(-2));
             }
             else
             {
+                this.g.carrot.play_vibrate();
                 if (currentLevel.LevelID == 8)
-                    SceneManager.LoadScene(0);
+                {
+                    this.g.ShowWin();
+                }
                 else
                 {
-                    this.g.carrot.play_vibrate();
                     StartCoroutine(StartLevelWait(currentLevel.LevelID + 1));
                 }
+                this.g.ads.show_ads_Interstitial();
             }
             levelWon = false;
         }
@@ -200,8 +199,6 @@ sealed public class Play : MonoBehaviour
                 Debug.Log("Level File Missing");
             else
                 Debug.Log(ex.ToString());
-
-            Error(ex.ToString());
         }
     }
 
@@ -221,8 +218,6 @@ sealed public class Play : MonoBehaviour
                 Debug.Log("Level File Missing");
             else
                 Debug.Log(ex.ToString());
-
-            Error(ex.ToString());
         }
     }
 
@@ -250,14 +245,6 @@ sealed public class Play : MonoBehaviour
         }
     }
 
-    private void Error(string errorMessage)
-    {
-        GameplayCanvas.GetComponent<Canvas>().enabled = false;
-        ErrorCanvas.GetComponent<Canvas>().enabled = true;
-        errorText.text = "Error: " + errorMessage;
-        errorOccured = true;
-    }
-
     public void ErrorButtonClicked()
     {
         SceneManager.LoadScene(0);
@@ -272,25 +259,6 @@ sealed public class Play : MonoBehaviour
     public void BackToMenu()
     {
         SceneManager.LoadScene(0);
-    }
-
-    public void LeaveGame()
-    {
-        if (currentLevel.LevelID == -1)
-        {
-            LevelEditor.loadingLevel = true;
-            LevelEditor.loadingWonLevel = false;
-            SceneManager.LoadScene(2);
-        }
-        else if (currentLevel.LevelID == -2)
-        {
-            Menu.returningFromUserLevel = true;
-            SceneManager.LoadScene(0);
-        }
-        else
-        {
-            SceneManager.LoadScene(0);
-        }
     }
 
     IEnumerator InputCooldown(float time)
