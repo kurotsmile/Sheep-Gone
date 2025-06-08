@@ -42,10 +42,11 @@ public class GameHandle : MonoBehaviour
     public Sprite icon_level_lock;
     public CameraControl cameraControl;
     public AudioSource audioBk;
+    public int index_sheep_temp_buy = -1;
 
     void Start()
     {
-        this.carrot.Load_Carrot();
+        this.carrot.Load_Carrot(this.CheckExitApp);
         this.panel_home.SetActive(true);
         this.panel_play.SetActive(false);
         this.panel_win.SetActive(false);
@@ -57,6 +58,17 @@ public class GameHandle : MonoBehaviour
         this.carrot.act_buy_ads_success = this.ads.RemoveAds;
         this.carrot.game.act_click_watch_ads_in_music_bk = this.ads.ShowRewardedVideo;
         this.ads.onRewardedSuccess = this.carrot.game.OnRewardedSuccess;
+        this.carrot.shop.onCarrotPaySuccess+=(string id_product) =>
+        {
+            if (id_product == this.carrot.shop.get_id_by_index(2))
+            {
+                this.ListSheepIsBuy[this.index_sheep_temp_buy] = true;
+                this.ListSheepIsBuy[this.currentSheepIndex] = false;
+                this.carrot.Show_msg("You have successfully purchased the sheep: " + this.ListSheepName[this.index_sheep_temp_buy]);
+                this.UpdateUISelectSheep();
+                this.UpdateSheepPlayer();
+            }
+        };
 
         this.ObjSheep.SetActive(true);
         this.ObjViewSelectSheep.SetActive(false);
@@ -74,6 +86,24 @@ public class GameHandle : MonoBehaviour
         gamepad1.set_gamepad_Joystick_right(() => this.play.OnCam_right());
         gamepad1.set_gamepad_Joystick_up(() => this.play.OnCam_zoom_in());
         gamepad1.set_gamepad_Joystick_down(() => this.play.OnCam_zoom_out());
+    }
+
+    private void CheckExitApp()
+    {
+        if (this.panel_play.activeInHierarchy)
+        {
+            this.OnBtn_ShowListLevel();
+            this.carrot.set_no_check_exit_app();
+        }else if (this.panel_selectLevel.activeInHierarchy)
+        {
+            this.OnBtn_Home();
+            this.carrot.set_no_check_exit_app();
+        }
+        else if (this.panel_selectSheep.activeInHierarchy)
+        {
+            this.OnBtn_Home();
+            this.carrot.set_no_check_exit_app();
+        }
     }
 
     public void Btn_setting()
@@ -229,6 +259,7 @@ public class GameHandle : MonoBehaviour
         this.carrot.play_sound_click();
         if (this.ListSheepIsBuy[this.currentSheepIndex])
         {
+            this.index_sheep_temp_buy = this.currentSheepIndex;
             this.carrot.buy_product(2);
         } 
         else
