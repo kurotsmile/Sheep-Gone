@@ -25,9 +25,7 @@ public class GameHandle : MonoBehaviour
     [Header("Assets Icons")]
     public Sprite icon_level_play;
     public Sprite icon_level_lock;
-
     public CameraControl cameraControl;
-
 
     void Start()
     {
@@ -44,7 +42,7 @@ public class GameHandle : MonoBehaviour
         if (!PlayerPrefs.HasKey("currentLevel")) PlayerPrefs.SetInt("currentLevel", 0);
     }
 
-     public void Btn_setting()
+    public void Btn_setting()
     {
         carrot.Create_Setting();
     }
@@ -115,6 +113,7 @@ public class GameHandle : MonoBehaviour
 
     public void OnStartLevel(int levelID)
     {
+        this.cameraControl.editor = false;
         this.ads.show_ads_Interstitial();
         this.carrot.play_sound_click();
         this.panel_selectLevel.SetActive(false);
@@ -142,5 +141,14 @@ public class GameHandle : MonoBehaviour
         this.cameraControl.editor = true;
         this.cameraControl.SetPivotPoint(new Vector3(0, 0, 0));
     }
+
+    public void OnBtn_next_sheep()
+    {
+        this.carrot.play_sound_click();
+    }
     
+    public void OnBtn_prev_sheep()
+    {
+        this.carrot.play_sound_click();
+    }
 }
