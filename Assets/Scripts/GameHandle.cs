@@ -20,6 +20,7 @@ public class GameHandle : MonoBehaviour
     public GameObject panel_selectSheep;
     public GameObject panel_play;
     public GameObject panel_win;
+    public GameObject panel_help;
 
     [Header("Map Select Sheep")]
     public GameObject[] ListSheepObj;
@@ -58,7 +59,7 @@ public class GameHandle : MonoBehaviour
         this.carrot.act_buy_ads_success = this.ads.RemoveAds;
         this.carrot.game.act_click_watch_ads_in_music_bk = this.ads.ShowRewardedVideo;
         this.ads.onRewardedSuccess = this.carrot.game.OnRewardedSuccess;
-        this.carrot.shop.onCarrotPaySuccess+=(string id_product) =>
+        this.carrot.shop.onCarrotPaySuccess += (string id_product) =>
         {
             if (id_product == this.carrot.shop.get_id_by_index(2))
             {
@@ -94,7 +95,8 @@ public class GameHandle : MonoBehaviour
         {
             this.OnBtn_ShowListLevel();
             this.carrot.set_no_check_exit_app();
-        }else if (this.panel_selectLevel.activeInHierarchy)
+        }
+        else if (this.panel_selectLevel.activeInHierarchy)
         {
             this.OnBtn_Home();
             this.carrot.set_no_check_exit_app();
@@ -128,6 +130,7 @@ public class GameHandle : MonoBehaviour
         this.panel_selectLevel.SetActive(false);
         this.panel_selectSheep.SetActive(false);
         this.panel_win.SetActive(false);
+        this.panel_help.SetActive(false);
         this.ads.show_ads_Interstitial();
         this.anim.ReloadHome();
         this.ObjSheep.SetActive(true);
@@ -262,7 +265,7 @@ public class GameHandle : MonoBehaviour
         {
             this.index_sheep_temp_buy = this.currentSheepIndex;
             this.carrot.buy_product(2);
-        } 
+        }
         else
         {
             this.ObjSheep.SetActive(true);
@@ -278,12 +281,19 @@ public class GameHandle : MonoBehaviour
 
     private void UpdateSheepPlayer()
     {
-        for (int i = 0; i <this.ListSheepPlayerObj.Length; i++)
+        for (int i = 0; i < this.ListSheepPlayerObj.Length; i++)
         {
             if (i == this.currentSheepIndex)
                 this.ListSheepPlayerObj[i].SetActive(true);
             else
                 this.ListSheepPlayerObj[i].SetActive(false);
         }
+    }
+
+    public void OnBtn_Help()
+    {
+        this.carrot.play_sound_click();
+        this.panel_help.SetActive(true);
+        this.panel_home.SetActive(false);
     }
 }

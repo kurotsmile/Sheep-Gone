@@ -192,22 +192,12 @@ sealed public class Play : MonoBehaviour
 
     private void StartLevel(int ID)
     {
-        try
-        {
-            currentLevel = LevelLoader.Load("LevelData", ID);
+            currentLevel = LevelLoader.Load("level",ID);
             currentLevel.InputCooldown = Time.time;
             levelLoaded = true;
             StartCoroutine(InputCooldown(1f));
             levelTimer = 0;
             levelText.text = "Level " + (currentLevel.LevelID + 1).ToString();
-        }
-        catch (Exception ex)
-        {
-            if (ex is System.IO.FileNotFoundException)
-                Debug.Log("Level File Missing");
-            else
-                Debug.Log(ex.ToString());
-        }
     }
 
     private void StartLevel(Dictionary<string, object> rawJSON)

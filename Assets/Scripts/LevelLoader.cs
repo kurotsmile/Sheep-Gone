@@ -10,10 +10,10 @@ sealed public class LevelLoader : MonoBehaviour {
     public static Dictionary<string, object> JSONToLoad;
 
     //Called when loading a level outside of the level editor
-    public static Level Load(string path, int index)
+    public static Level Load(string fiel_name_resources, int index)
     {
-        string rawJSON = Crypto.Decrypt(System.IO.File.ReadAllText(path));
-        List<object> allLevels = Json.Deserialize(rawJSON) as List<object>;
+		TextAsset levelFile = Resources.Load<TextAsset>(fiel_name_resources);
+        List<object> allLevels = Json.Deserialize(levelFile.text) as List<object>;
         Dictionary<string, object> levelData = allLevels[index] as Dictionary<string, object>;
         return LoadFromJSON(levelData, index, false);
     }
