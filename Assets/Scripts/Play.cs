@@ -297,6 +297,7 @@ sealed public class Play : MonoBehaviour
 
     public void OnGo_gamepad_left()
     {
+        this.g.carrot.play_sound_click();
         this.dir = GetMovementDirection(KeyCode.A);
         float cameraRotY = Camera.main.transform.rotation.eulerAngles.y - 90f;
         this.ObjSheep.transform.rotation = Quaternion.Euler(0, cameraRotY, 0);
@@ -304,6 +305,7 @@ sealed public class Play : MonoBehaviour
 
     public void OnGo_gamepad_right()
     {
+        this.g.carrot.play_sound_click();
         this.dir = GetMovementDirection(KeyCode.D);
         float cameraRotY = Camera.main.transform.rotation.eulerAngles.y + 90f;
         this.ObjSheep.transform.rotation = Quaternion.Euler(0, cameraRotY, 0);
@@ -311,6 +313,7 @@ sealed public class Play : MonoBehaviour
 
     public void OnGo_gamepad_up()
     {
+        this.g.carrot.play_sound_click();
         this.dir = GetMovementDirection(KeyCode.W);
         float cameraRotY = Camera.main.transform.rotation.eulerAngles.y;
         this.ObjSheep.transform.rotation = Quaternion.Euler(0, cameraRotY, 0);
@@ -318,6 +321,7 @@ sealed public class Play : MonoBehaviour
 
     public void OnGo_gamepad_down()
     {
+        this.g.carrot.play_sound_click();
         this.dir = GetMovementDirection(KeyCode.S);
         float cameraRotY = Camera.main.transform.rotation.eulerAngles.y - 180f;
         this.ObjSheep.transform.rotation = Quaternion.Euler(0, cameraRotY, 0);
@@ -325,22 +329,26 @@ sealed public class Play : MonoBehaviour
 
     public void OnCam_left()
     {
+        this.g.carrot.play_sound_click();
         Camera.main.transform.RotateAround(player.transform.position, Vector3.up, 220f * Time.deltaTime);
     }
 
     public void OnCam_right()
     {
+        this.g.carrot.play_sound_click();
         Camera.main.transform.RotateAround(player.transform.position, Vector3.up, -220f * Time.deltaTime);
     }
 
     public void OnCam_zoom_in()
     {
+        this.g.carrot.play_sound_click();
         cameraZoom = Mathf.Clamp(cameraZoom - (75 * Time.deltaTime), 15f, 35f);
         Camera.main.transform.position = player.transform.position + (Camera.main.transform.position - player.transform.position).normalized * cameraZoom;
     }
 
     public void OnCam_zoom_out()
     {
+        this.g.carrot.play_sound_click();
         cameraZoom = Mathf.Clamp(cameraZoom + (75 * Time.deltaTime), 15f, 35f);
         Camera.main.transform.position = player.transform.position + (Camera.main.transform.position - player.transform.position).normalized * cameraZoom;
     }
