@@ -6,6 +6,11 @@ using MiniJSON;
 using UnityEngine.SceneManagement;
 
 sealed public class LevelEditor : MonoBehaviour {
+
+    [Header("Obj Main")]
+    public GameHandle game;
+
+    [Header("Obj Level")]
     public static bool loadingLevel;
     public static bool loadingWonLevel;
     public static Texture2D testedLevelImage;
@@ -41,7 +46,6 @@ sealed public class LevelEditor : MonoBehaviour {
 
     private int playerX;
     private int playerY;
-	private string sessionID;
     private Color32 levelColor;
 	private RaycastHit hit;	
 	private GameObject cursor;
@@ -75,13 +79,11 @@ sealed public class LevelEditor : MonoBehaviour {
 	private Mechanism[,] mechanisms = new Mechanism[30,30];
 
 	void Start () {
-        sessionID = "";
         playerX = -1;
         levelSprite = questionMark;
         lastLevelSprite = questionMark;
 
-        if(!GameData.initialized)
-            GameData.Initialize();
+        if(!GameData.initialized) GameData.Initialize();
 
         SelectionSwitched("GF#Floor");
         activePanel = settingsPanel;
@@ -523,35 +525,9 @@ sealed public class LevelEditor : MonoBehaviour {
     {
         Message("Saving...", false);
         yield return new WaitForSeconds(2);
-
-        SaveLevel(levelAsJSON());
+        Debug.Log("Save data:" + Json.Serialize(levelAsJSON()));
+        this.game.mLevel.Add(Json.Serialize(levelAsJSON()));
         LevelActionSelect("Back");
-    }
-
-    private void SaveLevel(Dictionary<string, object> levelData)
-    {
-        bool empty = true;
-        for (int y = 0; y < currentLength; y++)
-        {
-            for (int x = 0; x < currentWidth; x++)
-            {
-                if (groundLayout[x, y] != null)
-                    empty = false;
-            }
-        }
-        if (empty)
-        {
-            SetNotification("Cannot save an empty level");
-            return;
-        }
-
-        string serialized = Json.Serialize(levelData);
-        System.IO.File.WriteAllText("User Levels\\" + levelName + ".lv", Crypto.Encrypt(serialized));
-        if(levelSprite != questionMark)
-            System.IO.File.WriteAllBytes("User Levels\\" + levelName + " Image.png", levelSprite.texture.EncodeToPNG());
-        levelChanged = false;
-        minorChange = false;
-        SetNotification("Level \"" + levelName + "\"" + " saved successfully!");
     }
 
     public void TestLevel()
@@ -588,7 +564,7 @@ sealed public class LevelEditor : MonoBehaviour {
 
         LevelLoader.levelToLoad = -1;
         LevelLoader.JSONToLoad = levelAsJSON();
-        SceneManager.LoadScene(1);
+        SceneManager.LoadScene(0);
     }
 
     private bool ValidMousePos()
@@ -789,7 +765,7 @@ sealed public class LevelEditor : MonoBehaviour {
 
     public void ExitEditor()
     {
-        SceneManager.LoadScene(0);
+        game.OnBtn_Home();
     }
 
     public void SaveExit()
@@ -801,7 +777,7 @@ sealed public class LevelEditor : MonoBehaviour {
         }
         else
         {
-            SaveLevel(levelAsJSON());
+            StartCoroutine(SaveLevelWait());
             ExitEditor();
         }
     }

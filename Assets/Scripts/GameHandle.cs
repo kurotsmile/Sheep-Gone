@@ -12,8 +12,11 @@ public class GameHandle : MonoBehaviour
     public IronSourceAds ads;
     public Anim_Control anim;
     public GameObject ObjSheep;
+    public GameObject ObjViewPlayMain;
     public GameObject ObjViewSelectSheep;
+    public GameObject ObjViewEditorLevel;
     public GameObject ObjLevel;
+    public ManagerLevel mLevel;
 
     [Header("UI")]
     public GameObject panel_home;
@@ -72,8 +75,12 @@ public class GameHandle : MonoBehaviour
             }
         };
 
+        this.mLevel.OnLoad();
+
         this.ObjSheep.SetActive(true);
+        this.ObjViewPlayMain.SetActive(true);
         this.ObjViewSelectSheep.SetActive(false);
+        this.ObjViewEditorLevel.SetActive(false);
         this.ObjLevel.SetActive(true);
         if (!PlayerPrefs.HasKey("currentLevel")) PlayerPrefs.SetInt("currentLevel", 0);
         this.currentSheepIndex = PlayerPrefs.GetInt("currentSheep", 0);
@@ -135,7 +142,9 @@ public class GameHandle : MonoBehaviour
         this.ads.show_ads_Interstitial();
         this.anim.ReloadHome();
         this.ObjSheep.SetActive(true);
+        this.ObjViewPlayMain.SetActive(true);
         this.ObjViewSelectSheep.SetActive(false);
+        this.ObjViewEditorLevel.SetActive(false);
         this.ObjLevel.SetActive(true);
     }
 
@@ -300,6 +309,7 @@ public class GameHandle : MonoBehaviour
 
     public void OnOpenEditorLevel()
     {
-        SceneManager.LoadScene(1);
+        this.ObjViewPlayMain.SetActive(false);
+        this.ObjViewEditorLevel.SetActive(true);
     }
 }
