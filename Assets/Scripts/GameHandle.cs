@@ -1,6 +1,7 @@
 using System;
 using Carrot;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class GameHandle : MonoBehaviour
@@ -295,5 +296,10 @@ public class GameHandle : MonoBehaviour
         this.carrot.play_sound_click();
         this.panel_help.SetActive(true);
         this.panel_home.SetActive(false);
+    }
+
+    public void OnOpenEditorLevel()
+    {
+        SceneManager.LoadScene(1);
     }
 }

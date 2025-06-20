@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 public class Grid : MonoBehaviour {
 	
@@ -11,8 +10,6 @@ public class Grid : MonoBehaviour {
 	float actualGridSizeZ;
 	
 	private float offsetY = 0f;
-	//private float scrollRate = 0.1f;
-	private float lastScroll = 0f;
 	
 	private Material lineMaterial;
 	
@@ -41,10 +38,8 @@ public class Grid : MonoBehaviour {
 	
 	void OnPostRender()
 	{
-		//CreateLineMaterial();
-		// set the current material
+		CreateLineMaterial();
 		lineMaterial.SetPass( 0 );
-		
 		GL.Begin( GL.LINES );
 		
 		if(showGrid)
@@ -69,7 +64,6 @@ public class Grid : MonoBehaviour {
 		GL.End();
 	}
 
-	//Called when changing size of level via level editor
 	public void ChangeGridSize(bool x, float val)
 	{
 		if(x)

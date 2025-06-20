@@ -18,7 +18,6 @@ sealed public class LevelEditor : MonoBehaviour {
     public GameObject settingsPanel;
     public GameObject openLevelPanel;
     public GameObject tinkerPanel;
-    public GameObject uploadPanel;
     public GameObject exitPanel;
     public GameObject tooltipPanel;
     public GameObject screenshotPanel;
@@ -28,7 +27,6 @@ sealed public class LevelEditor : MonoBehaviour {
     public GameObject errorText;
     public GameObject tinkerStartDropdown;
     public GameObject playButton;
-    public GameObject uploadButton;
 
     //Level Settings Objects
     public Transform levelInformation;
@@ -114,9 +112,6 @@ sealed public class LevelEditor : MonoBehaviour {
 
         if (levelComplete && levelChanged)
             levelComplete = false;
-
-		if(Input.GetKeyDown(KeyCode.U))
-			StartCoroutine(GetUserFromSession());
         
 		//Reset Selected arrow each frame
 		if(currentArrow)
@@ -132,8 +127,7 @@ sealed public class LevelEditor : MonoBehaviour {
 		Ray mouseRay = Camera.main.ScreenPointToRay (Input.mousePosition);
 
         //Destroy the cursor this frame if one is present, so the next can be spawned
-        if (cursor)
-            Destroy(cursor);
+        if (cursor) Destroy(cursor);
 
         //Check if mouse is being hovered over valid level space and allow to user to create or destroy aspects of the level
         if (ground.Raycast(mouseRay, out hitDist) && ValidMousePos() && !helpEnabled)
@@ -354,10 +348,8 @@ sealed public class LevelEditor : MonoBehaviour {
     private IEnumerator DisablePlayUpload()
     {
         playButton.GetComponent<Button>().interactable = false;
-        uploadButton.GetComponent<Button>().interactable = false;
         yield return new WaitForSeconds(2.5f);
         playButton.GetComponent<Button>().interactable = true;
-        uploadButton.GetComponent<Button>().interactable = true;
     }
 
     private void ClearTinker()
@@ -538,7 +530,6 @@ sealed public class LevelEditor : MonoBehaviour {
 
     private void SaveLevel(Dictionary<string, object> levelData)
     {
-        //TEMP ALPHA V0.1.0 PLEASE DELETE
         bool empty = true;
         for (int y = 0; y < currentLength; y++)
         {
@@ -553,7 +544,6 @@ sealed public class LevelEditor : MonoBehaviour {
             SetNotification("Cannot save an empty level");
             return;
         }
-        //----
 
         string serialized = Json.Serialize(levelData);
         System.IO.File.WriteAllText("User Levels\\" + levelName + ".lv", Crypto.Encrypt(serialized));
@@ -728,8 +718,6 @@ sealed public class LevelEditor : MonoBehaviour {
             //----
 
             selectionPanel.SetActive(false);
-            uploadPanel.SetActive(true);
-            activePanel = uploadPanel;
             Camera.main.GetComponent<CameraControl>().disableRotation = true;
         }
         else if(action == "Clear")
@@ -799,102 +787,6 @@ sealed public class LevelEditor : MonoBehaviour {
         RedInput.transform.parent.GetComponent<Image>().color = new Color(id == "R" ? colourVal / 255f : RedInput.transform.parent.GetComponent<Image>().color.r, id == "G" ? colourVal / 255f : RedInput.transform.parent.GetComponent<Image>().color.g, id == "B" ? colourVal / 255f : RedInput.transform.parent.GetComponent<Image>().color.b);
     }
 
-    //Will get back to this when i have figured out how to implement sessions properly
-    //IEnumerator UploadLevel(string JSONData)
-	//{
-	//	byte[] levelData = System.Text.Encoding.UTF8.GetBytes(JSONData);
-	//	WWWForm form = new WWWForm();
-
-	//	form.AddField("action", "upload");
-	//	form.AddField("user", "Walshy");
-	//	form.AddBinaryData("upfile", levelData, "L0001", "application/octet-stream");
-
-	//	if(sessionID != "")
-	//		form.AddField("SessionID", sessionID);
-
-	//	WWW w = new WWW("127.0.0.1/ButtonsAndBoxes/uploadLevel.php", form);
-
-	//	yield return w;
-	//	if(w.error != null)
-	//		Debug.Log(w.error);
-	//	else
-	//		Debug.Log(w.text);
-
-	//	if(w.responseHeaders.ContainsKey("SET-COOKIE"))
-	//	{
-	//		Debug.Log(w.responseHeaders ["SET-COOKIE"]);
-	//		try
-	//		{
-	//			sessionID = w.responseHeaders["SET-COOKIE"].Split(new char[2]{'=',';'})[1];
-	//		}
-	//		catch
-	//		{
-	//			Debug.Log("Unknown cookie");
-	//			sessionID = "";
-	//		}
-	//	}
-	//}
-
-	IEnumerator GetUserFromSession()
-	{
-		WWWForm form = new WWWForm ();
-		form.AddField ("yar", "arg");
-		if(sessionID != "")
-			form.AddField("SID", sessionID);
-		WWW w = new WWW("127.0.0.1/ButtonsAndBoxes/getUserSession.php", form);
-
-		yield return w;
-
-		Debug.Log(w.text);
-	}
-
-    IEnumerator UploadLevel(string JSONData, string creator)
-    {
-        WWWForm form = new WWWForm();
-        byte[] levelData = System.Text.Encoding.UTF8.GetBytes(JSONData);
-        char[] chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890".ToCharArray();
-        string tempName = "";
-        System.Random random = new System.Random();
-
-        //Randomize temp name
-        for (int i = 0; i < 10; i++)
-        {
-            tempName += chars[random.Next(chars.Length)];
-        }
-
-        form.AddField("action", "upload");
-        form.AddField("creator", creator);
-        form.AddBinaryData("uploaded_file", levelData, tempName, "application/octet-stream");
-
-        //WWW w = new WWW("127.0.0.1/uploadLevel.php", form);
-        WWW w = new WWW("michael-walsh.co.uk/uploadLevel.php", form);
-
-        yield return w;
-
-        if (w.error != null)
-        {
-            Debug.Log(w.error);
-            Message(w.error, true);
-        }
-        else
-        {
-            LevelActionSelect("Back");
-            if (w.text == "Success")
-                SetNotification("Level \"" + levelName + "\" uploaded successfully!");
-            else
-                SetNotification(w.text);
-        }
-    }
-
-    public void UploadLevelButton()
-    {
-        if(uploadPanel.transform.Find("Creator Name Input").GetComponent<InputField>().text.Length < 2)
-            return;
-
-        Message("Uploading", false);
-        StartCoroutine(UploadLevel(Json.Serialize(levelAsJSON()), uploadPanel.transform.Find("Creator Name Input").GetComponent<InputField>().text));
-    }
-
     public void ExitEditor()
     {
         SceneManager.LoadScene(0);
@@ -914,7 +806,6 @@ sealed public class LevelEditor : MonoBehaviour {
         }
     }
 
-    //Change the level details shown to the user based on what level they selected
     public void LevelSelectChange()
     {
         Texture2D newLevelImage = null;
@@ -1101,8 +992,7 @@ sealed public class LevelEditor : MonoBehaviour {
     {
         if (!helpEnabled)
         {
-            if (id == "Play" || id == "Upload")
-                ShowRequirements(id == "Play" ? false : true);
+            if (id == "Play") ShowRequirements(id == "Play" ? false : true);
             return;
         }
 
@@ -1122,10 +1012,6 @@ sealed public class LevelEditor : MonoBehaviour {
             case "Play":
                 helpString = "Play through the level you have built to test its elements.";
                 lineCount = 3;
-                break;
-            case "Upload":
-                helpString = "Upload your finished level so that other players can play through it.";
-                lineCount = 4;
                 break;
             case "Load":
                 helpString = "Open previous finished or part-built levels and edit them.";
