@@ -30,6 +30,8 @@ sealed public class Play : MonoBehaviour
     private float cameraZoom = 35f;
     private byte clockCycle;
     private float clockTimer;
+    private bool isTest = false;
+    private bool isCustomerPlay = false;
     private int[] dir = new int[] { 0, 0 };
 
     void Start()
@@ -48,9 +50,40 @@ sealed public class Play : MonoBehaviour
             inputReady = false;
             currentLevel.EndLevel();
         }
-
+        this.isTest = false;
+        this.isCustomerPlay = false;
         Debug.Log("Starting Game at Level: " + levelID);
         StartLevel(levelID);
+    }
+
+    public void OnStartGameCustomer(Dictionary<string, object> lData)
+    {
+        if (GameData.initialized == false) GameData.Initialize();
+        if (levelLoaded)
+        {
+            Debug.LogWarning("Level already loaded, restarting level.");
+            levelLoaded = false;
+            inputReady = false;
+            currentLevel.EndLevel();
+        }
+        this.isCustomerPlay = true;
+        this.isTest = false;
+        StartLevelTest(lData);
+    }
+
+    public void OnStartGameTest(Dictionary<string, object> lData)
+    {
+        if (GameData.initialized == false) GameData.Initialize();
+        if (levelLoaded)
+        {
+            Debug.LogWarning("Level already loaded, restarting level.");
+            levelLoaded = false;
+            inputReady = false;
+            currentLevel.EndLevel();
+        }
+        this.isCustomerPlay = false;
+        this.isTest = true;
+        StartLevelTest(lData);
     }
 
     void Update()
@@ -181,7 +214,8 @@ sealed public class Play : MonoBehaviour
             this.levelLoaded = false;
             inputReady = false;
             currentLevel.EndLevel();
-            this.g.OnBackEditorLevel();
+            if (this.isTest) this.g.OnBackEditorLevel();
+            if (this.isCustomerPlay) this.g.OnBtn_ShowListLevel(1);
         }
         else if (ID == -2)
             SceneManager.LoadScene(0);
@@ -202,14 +236,14 @@ sealed public class Play : MonoBehaviour
         levelText.text = "Level " + (currentLevel.LevelID + 1).ToString();
     }
 
-    public void StartLevelTest(Dictionary<string, object> lData)
+    private void StartLevelTest(Dictionary<string, object> lData)
     {
         currentLevel = LevelLoader.LoadFromJSON(lData, -1, false);
         currentLevel.InputCooldown = Time.time;
         levelLoaded = true;
         StartCoroutine(InputCooldown(1f));
         levelTimer = 0;
-        levelText.text = "Level " + (currentLevel.LevelID + 1).ToString();
+        levelText.text = lData["name"].ToString();
     }
 
     private void StartLevel(Dictionary<string, object> rawJSON)

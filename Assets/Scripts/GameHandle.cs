@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using Carrot;
 using UnityEngine;
@@ -169,35 +170,63 @@ public class GameHandle : MonoBehaviour
 
     public void OnBtn_ShowListLevel()
     {
+        this.OnBtn_ShowListLevel(0);
+        this.carrot.play_sound_click();
+    }
+
+    public void OnBtn_ShowListLevel(int type = 0)
+    {
         this.carrot.clear_contain(this.allItemSelectLevel);
         this.ads.show_ads_Interstitial();
-        this.carrot.play_sound_click();
         this.panel_home.SetActive(false);
         this.panel_play.SetActive(false);
         this.panel_selectLevel.SetActive(true);
-        for (int i = 0; i < 8; i++)
+        if (type == 0)
         {
-            var index_item = i;
-            GameObject item = Instantiate(this.itemSelectLevelPrefab, this.allItemSelectLevel);
-            BtnSelLevel btnSelLevel = item.GetComponent<BtnSelLevel>();
-            btnSelLevel.txtName.text = "Level " + (index_item + 1);
-            if (i > PlayerPrefs.GetInt("currentLevel"))
+            for (int i = 0; i < 8; i++)
             {
-                btnSelLevel.imgIcon.sprite = this.icon_level_lock;
-                btnSelLevel.imgBk.color = this.color_level_lock;
-                btnSelLevel.GetComponent<Button>().interactable = false;
+                var index_item = i;
+                GameObject item = Instantiate(this.itemSelectLevelPrefab, this.allItemSelectLevel);
+                BtnSelLevel btnSelLevel = item.GetComponent<BtnSelLevel>();
+                btnSelLevel.txtName.text = "Level " + (index_item + 1);
+                if (i > PlayerPrefs.GetInt("currentLevel"))
+                {
+                    btnSelLevel.imgIcon.sprite = this.icon_level_lock;
+                    btnSelLevel.imgBk.color = this.color_level_lock;
+                    btnSelLevel.GetComponent<Button>().interactable = false;
+                }
+                else
+                {
+                    btnSelLevel.imgIcon.sprite = this.icon_level_play;
+                    btnSelLevel.imgBk.color = this.color_level_open;
+                    btnSelLevel.GetComponent<Button>().interactable = true;
+                }
+                btnSelLevel.SetActClick(() =>
+                {
+                    this.OnStartLevel(index_item);
+                });
             }
-            else
+        }
+        else
+        {
+            List<Dictionary<string,object>> listLevel = this.mLevel.GetListLevel();
+            for (int i = 0; i < listLevel.Count; i++)
             {
+                var index_item = i;
+                Dictionary<string, object> dataL = listLevel[i];
+                GameObject item = Instantiate(this.itemSelectLevelPrefab, this.allItemSelectLevel);
+                BtnSelLevel btnSelLevel = item.GetComponent<BtnSelLevel>();
+                btnSelLevel.txtName.text = dataL["name"].ToString();
                 btnSelLevel.imgIcon.sprite = this.icon_level_play;
                 btnSelLevel.imgBk.color = this.color_level_open;
                 btnSelLevel.GetComponent<Button>().interactable = true;
+                btnSelLevel.SetActClick(() =>
+                {
+                    this.OnShowPlayTestLevelEditor(dataL);
+                });
             }
-            btnSelLevel.SetActClick(() =>
-            {
-                this.OnStartLevel(index_item);
-            });
         }
+
     }
 
     public void OnStartLevel(int levelID)
@@ -331,6 +360,6 @@ public class GameHandle : MonoBehaviour
         this.panel_play.SetActive(true);
         this.panel_selectLevel.SetActive(false);
         this.cameraControl.editor = false;
-        this.play.StartLevelTest(lData);
+        this.play.OnStartGameCustomer(lData);
     }
 }
