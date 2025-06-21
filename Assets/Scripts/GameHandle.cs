@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Carrot;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -311,5 +312,25 @@ public class GameHandle : MonoBehaviour
     {
         this.ObjViewPlayMain.SetActive(false);
         this.ObjViewEditorLevel.SetActive(true);
+    }
+
+    public void OnBackEditorLevel()
+    {
+        this.cameraControl.editor = true;
+        this.ObjViewPlayMain.SetActive(false);
+        this.ObjViewEditorLevel.SetActive(true);
+        this.panel_home.SetActive(true);
+        this.panel_play.SetActive(false);
+    }
+
+    public void OnShowPlayTestLevelEditor(Dictionary<string, object> lData)
+    {
+        this.ObjViewPlayMain.SetActive(true);
+        this.ObjViewEditorLevel.SetActive(false);
+        this.panel_home.SetActive(false);
+        this.panel_play.SetActive(true);
+        this.panel_selectLevel.SetActive(false);
+        this.cameraControl.editor = false;
+        this.play.StartLevelTest(lData);
     }
 }

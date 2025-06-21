@@ -34,14 +34,14 @@ sealed public class Play : MonoBehaviour
 
     void Start()
     {
-        if(GameData.initialized == false)GameData.Initialize();
+        if (GameData.initialized == false) GameData.Initialize();
         Camera.main.transform.position = player.transform.position + (Camera.main.transform.position - player.transform.position).normalized * cameraZoom;
     }
 
     public void OnStartGame(int levelID)
     {
-        if(GameData.initialized == false) GameData.Initialize();
-        if(levelLoaded)
+        if (GameData.initialized == false) GameData.Initialize();
+        if (levelLoaded)
         {
             Debug.LogWarning("Level already loaded, restarting level.");
             levelLoaded = false;
@@ -172,32 +172,44 @@ sealed public class Play : MonoBehaviour
         StartLevel(LevelLoader.JSONToLoad);
     }
 
-    //Called when starting a level outside of the level editor
     private IEnumerator StartLevelWait(int ID)
     {
         yield return new WaitForSeconds(1.25f);
 
         if (ID == -1)
-            SceneManager.LoadScene(2);
+        {
+            this.levelLoaded = false;
+            inputReady = false;
+            currentLevel.EndLevel();
+            this.g.OnBackEditorLevel();
+        }
         else if (ID == -2)
             SceneManager.LoadScene(0);
         else
         {
-            if (PlayerPrefs.GetInt("currentLevel") < ID)
-                PlayerPrefs.SetInt("currentLevel", ID);
-
+            if (PlayerPrefs.GetInt("currentLevel") < ID) PlayerPrefs.SetInt("currentLevel", ID);
             StartLevel(ID);
         }
     }
 
     private void StartLevel(int ID)
     {
-            currentLevel = LevelLoader.Load("level",ID);
-            currentLevel.InputCooldown = Time.time;
-            levelLoaded = true;
-            StartCoroutine(InputCooldown(1f));
-            levelTimer = 0;
-            levelText.text = "Level " + (currentLevel.LevelID + 1).ToString();
+        currentLevel = LevelLoader.Load("level", ID);
+        currentLevel.InputCooldown = Time.time;
+        levelLoaded = true;
+        StartCoroutine(InputCooldown(1f));
+        levelTimer = 0;
+        levelText.text = "Level " + (currentLevel.LevelID + 1).ToString();
+    }
+
+    public void StartLevelTest(Dictionary<string, object> lData)
+    {
+        currentLevel = LevelLoader.LoadFromJSON(lData, -1, false);
+        currentLevel.InputCooldown = Time.time;
+        levelLoaded = true;
+        StartCoroutine(InputCooldown(1f));
+        levelTimer = 0;
+        levelText.text = "Level " + (currentLevel.LevelID + 1).ToString();
     }
 
     private void StartLevel(Dictionary<string, object> rawJSON)

@@ -188,10 +188,12 @@ sealed public class LevelEditor : MonoBehaviour {
 
                     if (selectedBlock == 'P')
                     {
-                        if(playerX != -1)
-                            StartCoroutine(DeleteBlock('E', playerX, playerY));
+                        if (playerX != -1) StartCoroutine(DeleteBlock('E', playerX, playerY));
                         playerX = (int)(mouseVector.x / 2);
                         playerY = (int)(mouseVector.z / 2);
+                        Debug.Log("Chon player");
+                        GameObject c = currentObject.transform.Find("Main Camera").gameObject;
+                        Destroy(c);
                     }
 				}
 				else if(selectedLayer == 'M')
@@ -419,8 +421,7 @@ sealed public class LevelEditor : MonoBehaviour {
             selectedBlock = contents[0][1];
         }
 
-        if (currentButton)
-            currentButton.GetComponent<Image>().sprite = Panel;
+        if (currentButton) currentButton.GetComponent<Image>().sprite = Panel;
         currentButton = GameObject.Find(contents[1] + " Button").transform;
         currentButton.GetComponent<Image>().sprite = SelectedPanel;
     }
@@ -564,7 +565,7 @@ sealed public class LevelEditor : MonoBehaviour {
 
         LevelLoader.levelToLoad = -1;
         LevelLoader.JSONToLoad = levelAsJSON();
-        SceneManager.LoadScene(0);
+        this.game.OnShowPlayTestLevelEditor(levelAsJSON());
     }
 
     private bool ValidMousePos()
@@ -573,7 +574,7 @@ sealed public class LevelEditor : MonoBehaviour {
         //TODO: Calculate dropped height correctly
         if (mousePos.x < 250 && (Screen.height - mousePos.y) < (125 + (DropDownList.droppedCount * 75)))
             return false;
-        else
+        else 
             return true;
     }
 
