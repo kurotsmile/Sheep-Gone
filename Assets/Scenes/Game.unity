@@ -4189,7 +4189,7 @@ GameObject:
   - component: {fileID: 235616757}
   - component: {fileID: 235616756}
   m_Layer: 5
-  m_Name: Difficulty Dropdown
+  m_Name: Difficulty Field
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4214,7 +4214,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 158.3, y: -5.3999996}
+  m_AnchoredPosition: {x: 158.3, y: -5.399994}
   m_SizeDelta: {x: 281.8, y: 30}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &235616756
@@ -4266,11 +4266,11 @@ MonoBehaviour:
   m_Value: 0
   m_Options:
     m_Options:
-    - m_Text: Option A
+    - m_Text: Easy
       m_Image: {fileID: 0}
-    - m_Text: Option B
+    - m_Text: Medium
       m_Image: {fileID: 0}
-    - m_Text: Option C
+    - m_Text: Difficult
       m_Image: {fileID: 0}
   m_OnValueChanged:
     m_PersistentCalls:
@@ -4470,6 +4470,34 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1553640064}
     m_Modifications:
+    - target: {fileID: 400916, guid: ce551b381b7c2c4489a94398ac691daa, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: -90
+      objectReference: {fileID: 0}
+    - target: {fileID: 402688, guid: ce551b381b7c2c4489a94398ac691daa, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: -90
+      objectReference: {fileID: 0}
+    - target: {fileID: 402688, guid: ce551b381b7c2c4489a94398ac691daa, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 83.25442
+      objectReference: {fileID: 0}
+    - target: {fileID: 412690, guid: ce551b381b7c2c4489a94398ac691daa, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 83.25436
+      objectReference: {fileID: 0}
+    - target: {fileID: 412690, guid: ce551b381b7c2c4489a94398ac691daa, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 90
+      objectReference: {fileID: 0}
+    - target: {fileID: 418990, guid: ce551b381b7c2c4489a94398ac691daa, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: -0.00000020567997
+      objectReference: {fileID: 0}
+    - target: {fileID: 418990, guid: ce551b381b7c2c4489a94398ac691daa, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 90
+      objectReference: {fileID: 0}
     - target: {fileID: 422044, guid: ce551b381b7c2c4489a94398ac691daa, type: 3}
       propertyPath: m_RootOrder
       value: 5
@@ -4501,6 +4529,62 @@ PrefabInstance:
     - target: {fileID: 422044, guid: ce551b381b7c2c4489a94398ac691daa, type: 3}
       propertyPath: m_LocalRotation.z
       value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 432314, guid: ce551b381b7c2c4489a94398ac691daa, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 83.25436
+      objectReference: {fileID: 0}
+    - target: {fileID: 432314, guid: ce551b381b7c2c4489a94398ac691daa, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 90
+      objectReference: {fileID: 0}
+    - target: {fileID: 436102, guid: ce551b381b7c2c4489a94398ac691daa, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: -90
+      objectReference: {fileID: 0}
+    - target: {fileID: 443300, guid: ce551b381b7c2c4489a94398ac691daa, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 443300, guid: ce551b381b7c2c4489a94398ac691daa, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 443300, guid: ce551b381b7c2c4489a94398ac691daa, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 447326, guid: ce551b381b7c2c4489a94398ac691daa, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 4.817315e-11
+      objectReference: {fileID: 0}
+    - target: {fileID: 447326, guid: ce551b381b7c2c4489a94398ac691daa, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 447326, guid: ce551b381b7c2c4489a94398ac691daa, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 465322, guid: ce551b381b7c2c4489a94398ac691daa, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: -90
+      objectReference: {fileID: 0}
+    - target: {fileID: 465322, guid: ce551b381b7c2c4489a94398ac691daa, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: -96.745575
+      objectReference: {fileID: 0}
+    - target: {fileID: 484048, guid: ce551b381b7c2c4489a94398ac691daa, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 7.01671e-15
+      objectReference: {fileID: 0}
+    - target: {fileID: 484048, guid: ce551b381b7c2c4489a94398ac691daa, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 180
+      objectReference: {fileID: 0}
+    - target: {fileID: 484048, guid: ce551b381b7c2c4489a94398ac691daa, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: -90
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -21774,7 +21858,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 158.3, y: -5.3999996}
+  m_AnchoredPosition: {x: 158.3, y: -5.399994}
   m_SizeDelta: {x: 281.8, y: 34.5}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1543430606
@@ -22691,7 +22775,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Option A
+  m_Text: Easy
 --- !u!222 &1615778536
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -24729,6 +24813,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   game: {fileID: 91795853}
   PlayerObj: {fileID: 1261200716}
+  dropdownLevelType: {fileID: 235616756}
+  RedInput: {fileID: 1062613102}
+  GreenInput: {fileID: 771870182}
+  BlueInput: {fileID: 2024417406}
+  Panel: {fileID: 21300000, guid: a493165110f42b3498f7d624180bdd94, type: 3}
+  SelectedPanel: {fileID: 21300000, guid: d056dcda9722857418a5cf752aedec6d, type: 3}
+  questionMark: {fileID: 21300148, guid: e12a0fdd26a7eb24083bda227c24d610, type: 3}
+  imgColorShow: {fileID: 563020200}
   levelObjects: {fileID: 923463207}
   widthArrows: {fileID: 748932016}
   lengthArrows: {fileID: 1409364806}
@@ -24744,12 +24836,6 @@ MonoBehaviour:
   errorText: {fileID: 1944997442}
   tinkerStartDropdown: {fileID: 939650416}
   playButton: {fileID: 441236605}
-  RedInput: {fileID: 1062613102}
-  GreenInput: {fileID: 771870182}
-  BlueInput: {fileID: 2024417406}
-  Panel: {fileID: 21300000, guid: a493165110f42b3498f7d624180bdd94, type: 3}
-  SelectedPanel: {fileID: 21300000, guid: d056dcda9722857418a5cf752aedec6d, type: 3}
-  questionMark: {fileID: 21300148, guid: e12a0fdd26a7eb24083bda227c24d610, type: 3}
   levelName: 
   levelDifficulty: 
 --- !u!1 &1796989637

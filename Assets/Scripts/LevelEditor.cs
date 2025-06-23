@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 using Carrot;
+using System.Linq;
 
 sealed public class LevelEditor : MonoBehaviour {
 
@@ -15,8 +16,18 @@ sealed public class LevelEditor : MonoBehaviour {
     public static bool loadingWonLevel;
     public static Texture2D testedLevelImage;
 
-    //Level Editor Objects
-	public GameObject levelObjects;
+    [Header("Setting Form Level")]
+    public Dropdown dropdownLevelType;
+    public Slider RedInput;
+    public Slider GreenInput;
+    public Slider BlueInput;
+    public Sprite Panel;
+    public Sprite SelectedPanel;
+    public Sprite questionMark;
+    public Image imgColorShow;
+    
+    [Header("Obj Other")]
+    public GameObject levelObjects;
 	public GameObject widthArrows;
 	public GameObject lengthArrows;
     public GameObject selectionPanel;
@@ -33,12 +44,6 @@ sealed public class LevelEditor : MonoBehaviour {
     public GameObject playButton;
 
     //Level Settings Objects
-    public Slider RedInput;
-    public Slider GreenInput;
-    public Slider BlueInput;
-    public Sprite Panel;
-    public Sprite SelectedPanel;
-    public Sprite questionMark;
     public string levelName;
     public string levelDifficulty;
 
@@ -75,6 +80,8 @@ sealed public class LevelEditor : MonoBehaviour {
 	private Mechanism[,] mechanisms = new Mechanism[30,30];
     private Carrot_Box box;
     private GameObject ObjPlayerCur = null;
+
+    private string[] LevelTypesSetting = new string[] {"Easy", "Medium", "Hard", "Expert"};
 
 	void Start () {
         playerX = -1;
@@ -539,13 +546,11 @@ sealed public class LevelEditor : MonoBehaviour {
 
     public void SaveLevelSettings()
     {
-        if (levelColor != GameObject.Find("Level Color Select").GetComponent<Image>().color || levelDifficulty != GameObject.Find("Difficulty Field").GetComponent<Text>().text)
-            minorChange = true;
-
+        if (levelColor != GameObject.Find("Level Color Select").GetComponent<Image>().color || levelDifficulty!=LevelTypesSetting[dropdownLevelType.value]) minorChange = true;
         levelName = GameObject.Find("Level Name Input").GetComponent<InputField>().text;
         Camera.main.backgroundColor = GameObject.Find("Level Color Select").GetComponent<Image>().color;
         levelColor = GameObject.Find("Level Color Select").GetComponent<Image>().color;
-        levelDifficulty = GameObject.Find("Difficulty Field").GetComponent<Text>().text;
+        levelDifficulty = LevelTypesSetting[dropdownLevelType.value];
         LevelActionSelect("Back");
     }
 
@@ -556,7 +561,6 @@ sealed public class LevelEditor : MonoBehaviour {
         RedInput.value = levelColor.r;
         GreenInput.value = levelColor.g;
         BlueInput.value = levelColor.b;
-        GameObject.Find("Difficulty Field").GetComponent<Text>().text = levelDifficulty;
         LevelActionSelect("Back");
     }
 
@@ -567,7 +571,13 @@ sealed public class LevelEditor : MonoBehaviour {
             settingsPanel.SetActive(true);
             ClearTinker();
             activePanel = settingsPanel;
-            GameObject.Find("Difficulty Field").GetComponent<Text>().text = levelDifficulty;
+            this.dropdownLevelType.options.Clear();
+            for (int i = 0; i < this.LevelTypesSetting.Length; i++)
+            {
+                this.dropdownLevelType.options.Add(new Dropdown.OptionData(this.LevelTypesSetting[i]));
+                if(levelDifficulty== this.LevelTypesSetting[i])this.dropdownLevelType.value = i;
+            }
+            this.dropdownLevelType.RefreshShownValue();
             GameObject.Find("Level Name Input").GetComponent<InputField>().text = levelName;
             GameObject.Find("Level Color Select").GetComponent<Image>().color = (Color)levelColor;
             RedInput.value = levelColor.r;
@@ -651,7 +661,7 @@ sealed public class LevelEditor : MonoBehaviour {
 
     private void PopulateLevelList()
     {
-        this.box=this.game.carrot.Create_Box("Load Level", "Canvas_edit_level");
+        this.box=this.game.carrot.Create_Box("Load Level");
         this.box.set_icon(this.game.carrot.icon_carrot_all_category);
         List<Dictionary<string, object>> listLevel = this.game.mLevel.GetListLevel();
         for (int i = 0; i < listLevel.Count; i++)
@@ -668,6 +678,14 @@ sealed public class LevelEditor : MonoBehaviour {
                 if (this.box != null) this.box.close();
                 this.game.carrot.play_sound_click();
                 StartCoroutine(LoadLevelWait(d));
+            });
+
+            Carrot_Box_Btn_Item btn_del = item_lv.create_item();
+            btn_del.set_icon(this.game.carrot.sp_icon_del_data);
+            btn_del.set_icon_color(Color.white);
+            btn_del.set_act(()=>
+            {
+                
             });
         }
         box.set_act_before_closing(() =>
@@ -701,7 +719,7 @@ sealed public class LevelEditor : MonoBehaviour {
         else if (id == "B")
             colourVal = (int)BlueInput.value;
 
-        RedInput.transform.parent.GetComponent<Image>().color = new Color(id == "R" ? colourVal / 255f : RedInput.transform.parent.GetComponent<Image>().color.r, id == "G" ? colourVal / 255f : RedInput.transform.parent.GetComponent<Image>().color.g, id == "B" ? colourVal / 255f : RedInput.transform.parent.GetComponent<Image>().color.b);
+        this.imgColorShow.color = new Color(id == "R" ? colourVal / 255f : this.imgColorShow.color.r, id == "G" ? colourVal / 255f : this.imgColorShow.color.g, id == "B" ? colourVal / 255f : this.imgColorShow.color.b);
     }
 
     public void ExitEditor()

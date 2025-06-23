@@ -137,6 +137,7 @@ public class GameHandle : MonoBehaviour
 
     public void OnBtn_Home()
     {
+        this.carrot.SetNameCanvasMain("Canvas");
         this.carrot.play_sound_click();
         this.panel_play.SetActive(false);
         this.panel_home.SetActive(true);
@@ -360,12 +361,14 @@ public class GameHandle : MonoBehaviour
 
     public void OnOpenEditorLevel()
     {
+        this.carrot.SetNameCanvasMain("Canvas_edit_level");
         this.ObjViewPlayMain.SetActive(false);
         this.ObjViewEditorLevel.SetActive(true);
     }
 
     public void OnBackEditorLevel()
     {
+        this.carrot.SetNameCanvasMain("Canvas_edit_level");
         this.play.CheckClearMap();
         this.cameraControl.editor = true;
         this.ObjViewPlayMain.SetActive(false);
@@ -376,6 +379,7 @@ public class GameHandle : MonoBehaviour
 
     public void OnShowPlayTestLevelEditor(Dictionary<string, object> lData)
     {
+        this.carrot.SetNameCanvasMain("Canvas");
         this.ObjViewPlayMain.SetActive(true);
         this.ObjViewEditorLevel.SetActive(false);
         this.panel_home.SetActive(false);
@@ -387,6 +391,7 @@ public class GameHandle : MonoBehaviour
 
     public void OnShowPlayCustomer(Dictionary<string, object> lData)
     {
+        this.carrot.SetNameCanvasMain("Canvas");
         this.ObjViewPlayMain.SetActive(true);
         this.ObjViewEditorLevel.SetActive(false);
         this.panel_home.SetActive(false);
