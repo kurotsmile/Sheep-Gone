@@ -92,11 +92,8 @@ sealed public class LevelLoader : MonoBehaviour
 			throw new Exception("Invalid Block Count");
 		#endregion
 
-		//Change the background color instantly if loading into level edior, or tween it if not
-		if (Application.loadedLevel == 3)
-			Camera.main.backgroundColor = backgroundColor;
-		else
-			Camera.main.GetComponent<CameraControl>().ChangeBackgroundColour(backgroundColor);
+
+		Camera.main.GetComponent<CameraControl>().ChangeBackgroundColour(backgroundColor);
 
 		for (int y = 0; y < levelHeight; y++)
 		{
@@ -114,7 +111,7 @@ sealed public class LevelLoader : MonoBehaviour
 				entityLayer[x, y] = rawEntityLayer[x + (levelWidth * y)];
 				if (entityLayer[x, y] != 'Z')
 				{
-					if (entityLayer[x, y] != 'P' || Application.loadedLevel == 2)
+					if (entityLayer[x, y] != 'P')
 					{
 						currentObject = Instantiate(GameData.EntityTypes[entityLayer[x, y]], new Vector3(x * 2, (index == -1) ? 1 : 0, y * 2), Quaternion.identity) as GameObject;
 						currentObject.transform.parent = GameObject.Find("Level Objects").transform;
@@ -183,7 +180,6 @@ sealed public class LevelLoader : MonoBehaviour
 		return new Level(index, name, difficulty, backgroundColor, groundLayer, entities, mechanisms);
 	}
 
-	//Load Level With Specific ID From LevelData File
 	public static Level Load(string path, string ID)
 	{
 		int levelIndex = 0;

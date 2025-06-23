@@ -8,6 +8,7 @@ sealed public class LevelEditor : MonoBehaviour {
 
     [Header("Obj Main")]
     public GameHandle game;
+    public GameObject PlayerObj;
 
     [Header("Obj Level")]
     public static bool loadingLevel;
@@ -74,6 +75,8 @@ sealed public class LevelEditor : MonoBehaviour {
 	private char?[,] entityLayout = new char?[30,30];
 	private char?[,] mechanismLayout = new char?[30,30];
 	private Mechanism[,] mechanisms = new Mechanism[30,30];
+    private Carrot_Box box;
+    private GameObject ObjPlayerCur = null;
 
 	void Start () {
         playerX = -1;
@@ -597,7 +600,6 @@ sealed public class LevelEditor : MonoBehaviour {
         BlueInput.value = levelColor.b;
         GameObject.Find("Difficulty Field").GetComponent<Text>().text = levelDifficulty;
         levelSprite = lastLevelSprite;
-
         LevelActionSelect("Back");
     }
 
@@ -726,27 +728,42 @@ sealed public class LevelEditor : MonoBehaviour {
 
     private void PopulateLevelList()
     {
-        Carrot_Box box = this.game.carrot.Create_Box("Load Level", "Canvas_edit_level");
+        this.box=this.game.carrot.Create_Box("Load Level", "Canvas_edit_level");
         List<Dictionary<string, object>> listLevel = this.game.mLevel.GetListLevel();
         for (int i = 0; i < listLevel.Count; i++)
         {
             var index_item = i;
             Dictionary<string, object> dataL = listLevel[i];
+            var d = dataL;
             Carrot_Box_Item item_lv = box.create_item();
             item_lv.set_icon(this.game.carrot.icon_carrot_database);
             item_lv.set_title(dataL["name"].ToString());
             item_lv.set_tip(dataL["difficulty"].ToString());
             item_lv.set_act(() =>
             {
+                if (this.box != null) this.box.close();
                 this.game.carrot.play_sound_click();
-                this.ClearLevel();
-                this.LoadLevel(dataL);
+                StartCoroutine(LoadLevelWait(d));
             });
         }
         box.set_act_before_closing(() =>
         {
             this.LevelActionSelect("Back");
         });
+    }
+
+    IEnumerator LoadLevelWait(Dictionary<string, object> dataLevel)
+    {
+        ClearLevel();
+        yield return new WaitForSeconds(2);
+        if(ObjPlayerCur != null) Destroy(ObjPlayerCur);
+        this.ObjPlayerCur=Instantiate(this.PlayerObj, new Vector3(0, 0, 0), Quaternion.identity) as GameObject;
+        this.ObjPlayerCur.name = "Player";
+        GameObject c = ObjPlayerCur.transform.Find("Main Camera").gameObject;
+        Destroy(c);
+        LoadLevel(dataLevel);
+        LevelActionSelect("Back");
+        SetNotification("Loaded Level \"" + levelName + "\"");
     }
 
     public void ColourTextChanged(string id)
