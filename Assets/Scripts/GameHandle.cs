@@ -43,6 +43,9 @@ public class GameHandle : MonoBehaviour
     public GameObject itemSelectLevelPrefab;
     public Color32 color_level_open;
     public Color32 color_level_lock;
+    public Image[] imgBkBtnTypeMap;
+    public Color32 ColorLevelNomalType;
+    public Color32 ColorLevelSelectType;
 
     [Header("Assets Icons")]
     public Sprite icon_level_play;
@@ -174,15 +177,20 @@ public class GameHandle : MonoBehaviour
         this.carrot.play_sound_click();
     }
 
-    public void OnBtn_ShowListLevel(int type = 0)
+    public void OnBtn_ShowListLevel(int type)
     {
         this.carrot.clear_contain(this.allItemSelectLevel);
         this.ads.show_ads_Interstitial();
         this.panel_home.SetActive(false);
         this.panel_play.SetActive(false);
         this.panel_selectLevel.SetActive(true);
+
+        this.imgBkBtnTypeMap[0].color = this.ColorLevelNomalType;
+        this.imgBkBtnTypeMap[1].color = this.ColorLevelNomalType;
+
         if (type == 0)
         {
+            this.imgBkBtnTypeMap[0].color = this.ColorLevelSelectType;
             for (int i = 0; i < 8; i++)
             {
                 var index_item = i;
@@ -209,7 +217,8 @@ public class GameHandle : MonoBehaviour
         }
         else
         {
-            List<Dictionary<string,object>> listLevel = this.mLevel.GetListLevel();
+            this.imgBkBtnTypeMap[1].color = this.ColorLevelSelectType;
+            List<Dictionary<string, object>> listLevel = this.mLevel.GetListLevel();
             for (int i = 0; i < listLevel.Count; i++)
             {
                 var index_item = i;
@@ -222,7 +231,7 @@ public class GameHandle : MonoBehaviour
                 btnSelLevel.GetComponent<Button>().interactable = true;
                 btnSelLevel.SetActClick(() =>
                 {
-                    this.OnShowPlayTestLevelEditor(dataL);
+                    this.OnShowPlayCustomer(dataL);
                 });
             }
         }
@@ -345,6 +354,7 @@ public class GameHandle : MonoBehaviour
 
     public void OnBackEditorLevel()
     {
+        this.play.CheckClearMap();
         this.cameraControl.editor = true;
         this.ObjViewPlayMain.SetActive(false);
         this.ObjViewEditorLevel.SetActive(true);
@@ -353,6 +363,17 @@ public class GameHandle : MonoBehaviour
     }
 
     public void OnShowPlayTestLevelEditor(Dictionary<string, object> lData)
+    {
+        this.ObjViewPlayMain.SetActive(true);
+        this.ObjViewEditorLevel.SetActive(false);
+        this.panel_home.SetActive(false);
+        this.panel_play.SetActive(true);
+        this.panel_selectLevel.SetActive(false);
+        this.cameraControl.editor = false;
+        this.play.OnStartGameTest(lData);
+    }
+
+    public void OnShowPlayCustomer(Dictionary<string, object> lData)
     {
         this.ObjViewPlayMain.SetActive(true);
         this.ObjViewEditorLevel.SetActive(false);

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 using MiniJSON;
 
+public enum TYPE_PLAY{main,customer,test}
 sealed public class Play : MonoBehaviour
 {
 
@@ -15,6 +16,7 @@ sealed public class Play : MonoBehaviour
     static int[][] directions = new int[][] { new int[] { 0, 1 }, new int[] { 1, 0 }, new int[] { 0, -1 }, new int[] { -1, 0 } };
 
     public GameObject GameplayCanvas;
+    public TYPE_PLAY typePlay = TYPE_PLAY.main;
 
     public bool levelWon;
     public Text timeText;
@@ -30,8 +32,6 @@ sealed public class Play : MonoBehaviour
     private float cameraZoom = 35f;
     private byte clockCycle;
     private float clockTimer;
-    private bool isTest = false;
-    private bool isCustomerPlay = false;
     private int[] dir = new int[] { 0, 0 };
 
     void Start()
@@ -40,7 +40,7 @@ sealed public class Play : MonoBehaviour
         Camera.main.transform.position = player.transform.position + (Camera.main.transform.position - player.transform.position).normalized * cameraZoom;
     }
 
-    public void OnStartGame(int levelID)
+    public void CheckClearMap()
     {
         if (GameData.initialized == false) GameData.Initialize();
         if (levelLoaded)
@@ -50,39 +50,27 @@ sealed public class Play : MonoBehaviour
             inputReady = false;
             currentLevel.EndLevel();
         }
-        this.isTest = false;
-        this.isCustomerPlay = false;
+    }
+
+    public void OnStartGame(int levelID)
+    {
+        this.CheckClearMap();
+        this.typePlay = TYPE_PLAY.main;
         Debug.Log("Starting Game at Level: " + levelID);
         StartLevel(levelID);
     }
 
     public void OnStartGameCustomer(Dictionary<string, object> lData)
     {
-        if (GameData.initialized == false) GameData.Initialize();
-        if (levelLoaded)
-        {
-            Debug.LogWarning("Level already loaded, restarting level.");
-            levelLoaded = false;
-            inputReady = false;
-            currentLevel.EndLevel();
-        }
-        this.isCustomerPlay = true;
-        this.isTest = false;
+        this.CheckClearMap();
+        this.typePlay = TYPE_PLAY.customer;
         StartLevelTest(lData);
     }
 
     public void OnStartGameTest(Dictionary<string, object> lData)
     {
-        if (GameData.initialized == false) GameData.Initialize();
-        if (levelLoaded)
-        {
-            Debug.LogWarning("Level already loaded, restarting level.");
-            levelLoaded = false;
-            inputReady = false;
-            currentLevel.EndLevel();
-        }
-        this.isCustomerPlay = false;
-        this.isTest = true;
+        this.CheckClearMap();
+        this.typePlay = TYPE_PLAY.test;
         StartLevelTest(lData);
     }
 
@@ -214,8 +202,8 @@ sealed public class Play : MonoBehaviour
             this.levelLoaded = false;
             inputReady = false;
             currentLevel.EndLevel();
-            if (this.isTest) this.g.OnBackEditorLevel();
-            if (this.isCustomerPlay) this.g.OnBtn_ShowListLevel(1);
+            if (this.typePlay == TYPE_PLAY.test) this.g.OnBackEditorLevel();
+            if (this.typePlay == TYPE_PLAY.customer) this.g.OnBtn_ShowListLevel(1);
         }
         else if (ID == -2)
             SceneManager.LoadScene(0);
@@ -376,13 +364,13 @@ sealed public class Play : MonoBehaviour
     public void OnCam_left()
     {
         this.g.carrot.play_sound_click();
-        Camera.main.transform.RotateAround(player.transform.position, Vector3.up, 220f * Time.deltaTime);
+        Camera.main.transform.RotateAround(player.transform.position, Vector3.up, +220f * Time.deltaTime);
     }
 
     public void OnCam_right()
     {
         this.g.carrot.play_sound_click();
-        Camera.main.transform.RotateAround(player.transform.position, Vector3.up, -220f * Time.deltaTime);
+        Camera.main.transform.RotateAround(player.transform.position, Vector3.up, 220f * Time.deltaTime);
     }
 
     public void OnCam_zoom_in()
@@ -397,5 +385,18 @@ sealed public class Play : MonoBehaviour
         this.g.carrot.play_sound_click();
         cameraZoom = Mathf.Clamp(cameraZoom + (75 * Time.deltaTime), 15f, 35f);
         Camera.main.transform.position = player.transform.position + (Camera.main.transform.position - player.transform.position).normalized * cameraZoom;
+    }
+
+    public void OnCam_Reset()
+    {
+        this.g.carrot.play_sound_click();
+        Camera.main.transform.position = player.transform.position + (Camera.main.transform.position - player.transform.position).normalized * cameraZoom;
+    }
+
+    public void OnBtnBack()
+    {
+        if (this.typePlay == TYPE_PLAY.main) this.g.OnBtn_ShowListLevel();
+        if (this.typePlay == TYPE_PLAY.customer) this.g.OnBtn_ShowListLevel(1);
+        if (this.typePlay == TYPE_PLAY.test) this.g.OnBackEditorLevel();
     }
 }

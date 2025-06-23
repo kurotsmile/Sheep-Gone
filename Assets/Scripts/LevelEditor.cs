@@ -2,8 +2,7 @@
 using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
-using MiniJSON;
-using UnityEngine.SceneManagement;
+using Carrot;
 
 sealed public class LevelEditor : MonoBehaviour {
 
@@ -21,7 +20,6 @@ sealed public class LevelEditor : MonoBehaviour {
 	public GameObject lengthArrows;
     public GameObject selectionPanel;
     public GameObject settingsPanel;
-    public GameObject openLevelPanel;
     public GameObject tinkerPanel;
     public GameObject exitPanel;
     public GameObject tooltipPanel;
@@ -34,7 +32,6 @@ sealed public class LevelEditor : MonoBehaviour {
     public GameObject playButton;
 
     //Level Settings Objects
-    public Transform levelInformation;
     public Slider RedInput;
     public Slider GreenInput;
     public Slider BlueInput;
@@ -191,7 +188,6 @@ sealed public class LevelEditor : MonoBehaviour {
                         if (playerX != -1) StartCoroutine(DeleteBlock('E', playerX, playerY));
                         playerX = (int)(mouseVector.x / 2);
                         playerY = (int)(mouseVector.z / 2);
-                        Debug.Log("Chon player");
                         GameObject c = currentObject.transform.Find("Main Camera").gameObject;
                         Destroy(c);
                     }
@@ -650,9 +646,7 @@ sealed public class LevelEditor : MonoBehaviour {
         }
         else if(action == "Load")
         {
-            openLevelPanel.SetActive(true);
             ClearTinker();
-            activePanel = openLevelPanel;
             selectionPanel.SetActive(false);
             Camera.main.GetComponent<CameraControl>().disableRotation = true;
             PopulateLevelList();
@@ -732,24 +726,29 @@ sealed public class LevelEditor : MonoBehaviour {
 
     private void PopulateLevelList()
     {
-        string[] levels = System.IO.Directory.GetFiles("User Levels");
-        List<Dropdown.OptionData> formattedLevels = new List<Dropdown.OptionData>();
-
-        formattedLevels.Add(new Dropdown.OptionData("-"));
-
-        foreach (string level in levels)
+        Carrot_Box box = this.game.carrot.Create_Box("Load Level", "Canvas_edit_level");
+        List<Dictionary<string, object>> listLevel = this.game.mLevel.GetListLevel();
+        for (int i = 0; i < listLevel.Count; i++)
         {
-            string name = level.Split('\\')[1];
-            if (!name.Contains(".png"))
+            var index_item = i;
+            Dictionary<string, object> dataL = listLevel[i];
+            Carrot_Box_Item item_lv = box.create_item();
+            item_lv.set_icon(this.game.carrot.icon_carrot_database);
+            item_lv.set_title(dataL["name"].ToString());
+            item_lv.set_tip(dataL["difficulty"].ToString());
+            item_lv.set_act(() =>
             {
-                formattedLevels.Add(new Dropdown.OptionData(name.Remove(name.Length - 3)));
-            }
+                this.game.carrot.play_sound_click();
+                this.ClearLevel();
+                this.LoadLevel(dataL);
+            });
         }
-
-        GameObject.Find("Open Level Dropdown").GetComponent<Dropdown>().options = formattedLevels;
+        box.set_act_before_closing(() =>
+        {
+            this.LevelActionSelect("Back");
+        });
     }
 
-    //Allow the user to change the color of the level background
     public void ColourTextChanged(string id)
     {
         int colourVal = 0;
@@ -783,44 +782,6 @@ sealed public class LevelEditor : MonoBehaviour {
         }
     }
 
-    public void LevelSelectChange()
-    {
-        Texture2D newLevelImage = null;
-        string levelPath = "User Levels\\" + GameObject.Find("Open Level Field").GetComponent<Text>().text;
-        Dictionary<string, object> levelData = Json.Deserialize(Crypto.Decrypt(System.IO.File.ReadAllText(levelPath + ".lv"))) as Dictionary<string, object>;
-
-        //Exit method if selected level file does not exist
-        try
-        {
-            //Display level image to user if one exists
-            if (System.IO.File.Exists(levelPath + " Image.png"))
-            {
-                newLevelImage = new Texture2D(720, 480);
-                newLevelImage.LoadImage(System.IO.File.ReadAllBytes(levelPath + " Image.png"));
-                levelInformation.Find("Open Level Image").GetComponent<Image>().color = Color.white;
-                levelInformation.Find("Open Level Image").GetComponent<Image>().sprite = Sprite.Create(newLevelImage, new Rect(0, 0, newLevelImage.width, newLevelImage.height), new Vector2(0.5f, 0.5f));
-            }
-            else
-            {
-                levelInformation.Find("Open Level Image").GetComponent<Image>().color = Color.black;
-                levelInformation.Find("Open Level Image").GetComponent<Image>().sprite = questionMark;
-            }
-
-            Debug.Log((string)levelData["name"]);
-            levelInformation.Find("Open Level Name Text").GetComponent<Text>().text =  "Level Name: " + (string)levelData["name"];
-            levelInformation.Find("Open Level Difficulty Text").GetComponent<Text>().text = "Difficulty: " + (string)levelData["difficulty"];
-            levelInformation.Find("Open Level Dimensions Text").GetComponent<Text>().text = "Dimensions: " + ((string)levelData["dimensions"]).Substring(0,2) + " x " + ((string)levelData["dimensions"]).Substring(2, 2);
-        }
-        catch
-        {
-            Message("Error: Selected Level Not Found", true);
-            return;
-        }
-        finally
-        {
-            levelData = new Dictionary<string, object>();
-        }
-    }
 
     private void Message(string message, bool error)
     {
@@ -839,11 +800,6 @@ sealed public class LevelEditor : MonoBehaviour {
         messagePanel.transform.Find("Okay Button").gameObject.SetActive(error ? true : false);
     }
 
-    //private void ExitMessage()
-    //{
-    //    activePanel = selectionPanel;
-    //    messagePanel.SetActive(false);
-    //}
     
     private void OpenTinker()
     {
@@ -1060,19 +1016,6 @@ sealed public class LevelEditor : MonoBehaviour {
         }
     }
 
-    //Called when the user wishes to amend a previously created level
-    public void LoadLevelButton()
-    {
-        if (System.IO.File.Exists("User Levels\\" + GameObject.Find("Open Level Field").GetComponent<Text>().text + ".lv"))
-        {
-            StartCoroutine(LoadLevelWait("User Levels\\" + GameObject.Find("Open Level Field").GetComponent<Text>().text + ".lv"));
-            Message("Loading", false);
-        }
-        else
-        {
-            Message("Can't find file for selected level.", true);
-        }
-    }
 
     private void SetNotification(string message)
     {
@@ -1080,22 +1023,6 @@ sealed public class LevelEditor : MonoBehaviour {
         notificationText.GetComponent<NotificationMessage>().SetMessage(message);
     }
 
-    //Called when the user wants to load a previously saved level
-    private void LoadLevel(string levelPath)
-    {
-        LoadLevel(Json.Deserialize(Crypto.Decrypt(System.IO.File.ReadAllText(levelPath))) as Dictionary<string, object>);
-        LevelActionSelect("Back");
-    }
-
-    IEnumerator LoadLevelWait(string levelPath)
-    {
-        ClearLevel();
-        yield return new WaitForSeconds(2);
-        LoadLevel(levelPath);
-        SetNotification("Loaded Level \"" + levelName + "\"");
-    }
-
-    //Called when returning from testing a level
     private void LoadLevel(Dictionary<string, object> levelData)
     {
         Level levelToLoad = LevelLoader.LoadFromJSON(levelData, -1, true);

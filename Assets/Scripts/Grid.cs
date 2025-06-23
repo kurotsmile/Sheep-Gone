@@ -3,6 +3,7 @@
 public class Grid : MonoBehaviour {
 	
 	public bool showGrid;
+	public Shader lineShader;
 
 	public float gridSizeX;
 	public float gridSizeZ;
@@ -24,7 +25,7 @@ public class Grid : MonoBehaviour {
 	void CreateLineMaterial()
 	{		
 		if( !lineMaterial ) {
-			lineMaterial = new Material(Resources.Load("lineShader") as Shader);
+			lineMaterial = new Material(this.lineShader);
 			//lineMaterial = new Material( "Shader \"Lines/Colored Blended\" {" +
 			 //                           "SubShader { Pass { " +
 			  //                          " Blend SrcAlpha OneMinusSrcAlpha " +
@@ -32,8 +33,8 @@ public class Grid : MonoBehaviour {
 			      //                      " BindChannels {" +
 			        //                    " Bind \"vertex\", vertex Bind \"color\", color }" +
 			          //                  "} } }" );
-			lineMaterial.hideFlags = HideFlags.HideAndDontSave;
-			lineMaterial.shader.hideFlags = HideFlags.HideAndDontSave;}
+			lineMaterial.hideFlags = HideFlags.None;
+			lineMaterial.shader.hideFlags = HideFlags.None;}
 	}
 	
 	void OnPostRender()
