@@ -297,6 +297,18 @@ public class GameHandle : MonoBehaviour
         this.ObjSheepArrowSelect.transform.position = pos_vec;
         this.ObjSheepArrowSelect.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
         this.txtNameSheepSelect.text = this.ListSheepName[this.currentSheepIndex];
+
+        for (int i = 0; i < this.ListSheepObj.Length; i++)
+        {
+            if (i != this.currentSheepIndex)
+            {
+                Animator animNomal=this.ListSheepObj[i].GetComponent<Animator>();
+                animNomal.Play("Idle");
+            }
+        }
+
+        Animator anim=this.ListSheepObj[this.currentSheepIndex].GetComponent<Animator>();
+        anim.Play("Atk");
         if (this.ListSheepIsBuy[this.currentSheepIndex])
         {
             this.imgIconSheepSelectDone.sprite = this.carrot.icon_carrot_buy;
