@@ -19,11 +19,13 @@ sealed public class Play : MonoBehaviour
     public TYPE_PLAY typePlay = TYPE_PLAY.main;
 
     public bool levelWon;
+
+    [Header("UI Elements")]
     public Text timeText;
     public Text levelText;
-
-    private Level currentLevel;
+    public GameObject panelPause;
     public Entity player;
+    private Level currentLevel;
     private bool levelLoaded = false;
     private bool inputReady;
     private bool gamePaused;
@@ -36,6 +38,7 @@ sealed public class Play : MonoBehaviour
 
     void Start()
     {
+        this.panelPause.SetActive(false);
         if (GameData.initialized == false) GameData.Initialize();
         Camera.main.transform.position = player.transform.position + (Camera.main.transform.position - player.transform.position).normalized * cameraZoom;
     }
@@ -76,11 +79,9 @@ sealed public class Play : MonoBehaviour
 
     void Update()
     {
-        if (!levelLoaded || gamePaused)
-            return;
+        if (!levelLoaded || gamePaused)return;
 
-        if (Input.GetKeyDown(KeyCode.Escape))
-            Pause();
+        if (Input.GetKeyDown(KeyCode.Escape)) Pause();
 
         levelTimer += Time.deltaTime;
         timeText.text = Mathf.FloorToInt(levelTimer / 60F).ToString("00") + ":" + Mathf.FloorToInt(levelTimer % 60).ToString("00");
@@ -274,23 +275,15 @@ sealed public class Play : MonoBehaviour
         if (!player.IsMoving && inputReady && levelLoaded)
         {
             gamePaused = true;
+            this.panelPause.SetActive(true);
         }
-    }
-
-    public void ErrorButtonClicked()
-    {
-        SceneManager.LoadScene(0);
     }
 
     public void UnPause()
     {
         GameplayCanvas.GetComponent<Canvas>().enabled = true;
         gamePaused = false;
-    }
-
-    public void BackToMenu()
-    {
-        SceneManager.LoadScene(0);
+        this.panelPause.SetActive(false);
     }
 
     IEnumerator InputCooldown(float time)

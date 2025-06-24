@@ -7,6 +7,8 @@ Ever wondered what would happen if a sheep got tired of farm life and decided to
 
 Guide your fluffy little rebel 🐑 through clever puzzles by hopping onto pressure pads, chewing through hay blocks (yum!), and activating strange and mysterious contraptions that open doors. Your goal? Reach the **Escape Point** and say goodbye to baa-ring life forever!
 
+![screenshot](Assets/Images/game_icon.png) 
+
 But it won’t be easy — some doors only open when you're standing in the right spot, or when you trigger a button with your chonky sheep body. You’ll need brainpower, timing, and maybe a little luck (plus a lot of *meh*-mory).
 
 **🌟 Game Features:**

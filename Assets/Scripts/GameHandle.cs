@@ -1,9 +1,6 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using Carrot;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class GameHandle : MonoBehaviour
@@ -11,6 +8,8 @@ public class GameHandle : MonoBehaviour
     [Header("Main Objects")]
     public Carrot.Carrot carrot;
     public Play play;
+
+    public Carrot_File file;
     public IronSourceAds ads;
     public Anim_Control anim;
     public GameObject ObjSheep;
@@ -31,7 +30,7 @@ public class GameHandle : MonoBehaviour
     [Header("Map Select Sheep")]
     public GameObject[] ListSheepObj;
     public GameObject[] ListSheepPlayerObj;
-    public String[] ListSheepName;
+    public string[] ListSheepName;
     public bool[] ListSheepIsBuy;
     public GameObject ObjSheepArrowSelect;
     private int currentSheepIndex = 0;
@@ -50,6 +49,8 @@ public class GameHandle : MonoBehaviour
     [Header("Assets Icons")]
     public Sprite icon_level_play;
     public Sprite icon_level_lock;
+    public Sprite iconImportData;
+    public Sprite iconExportData;
     public CameraControl cameraControl;
     public AudioSource audioBk;
     public int index_sheep_temp_buy = -1;
@@ -64,6 +65,11 @@ public class GameHandle : MonoBehaviour
         this.panel_selectLevel.SetActive(false);
         this.ads.On_Load();
         this.carrot.game.load_bk_music(this.audioBk);
+
+        if(carrot.os_app==OS.Window)
+            this.file.type = Carrot_File_Type.StandaloneFileBrowser;
+        else
+            this.file.type = Carrot_File_Type.SimpleFileBrowser;
 
         this.carrot.act_buy_ads_success = this.ads.RemoveAds;
         this.carrot.game.act_click_watch_ads_in_music_bk = this.ads.ShowRewardedVideo;
@@ -106,7 +112,7 @@ public class GameHandle : MonoBehaviour
     {
         if (this.panel_play.activeInHierarchy)
         {
-            this.OnBtn_ShowListLevel();
+            this.play.OnBtnBack();
             this.carrot.set_no_check_exit_app();
         }
         else if (this.panel_selectLevel.activeInHierarchy)
