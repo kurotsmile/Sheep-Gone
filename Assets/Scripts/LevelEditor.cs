@@ -661,6 +661,7 @@ sealed public class LevelEditor : MonoBehaviour {
 
     private void PopulateLevelList()
     {
+        if (box != null) box.close();
         this.box=this.game.carrot.Create_Box("Load Level");
         this.box.set_icon(this.game.carrot.icon_carrot_all_category);
         List<Dictionary<string, object>> listLevel = this.game.mLevel.GetListLevel();
@@ -669,6 +670,7 @@ sealed public class LevelEditor : MonoBehaviour {
             var index_item = i;
             Dictionary<string, object> dataL = listLevel[i];
             var d = dataL;
+            var d_name= dataL["name"].ToString();
             Carrot_Box_Item item_lv = box.create_item();
             item_lv.set_icon(this.game.carrot.icon_carrot_database);
             item_lv.set_title(dataL["name"].ToString());
@@ -681,11 +683,17 @@ sealed public class LevelEditor : MonoBehaviour {
             });
 
             Carrot_Box_Btn_Item btn_del = item_lv.create_item();
-            btn_del.set_icon(this.game.carrot.sp_icon_del_data);
+            btn_del.set_icon(game.carrot.sp_icon_del_data);
             btn_del.set_icon_color(Color.white);
+            btn_del.set_color(game.carrot.color_highlight);
             btn_del.set_act(()=>
             {
-                
+                game.carrot.Show_msg("Delete Level","Are you sure you want to delete this level '"+d_name+"'?", () =>
+                {
+                    game.carrot.play_sound_click();
+                    game.mLevel.DeleteItem(index_item);
+                    PopulateLevelList();
+                });
             });
         }
         box.set_act_before_closing(() =>
@@ -741,7 +749,6 @@ sealed public class LevelEditor : MonoBehaviour {
             ExitEditor();
         }
     }
-
 
     private void Message(string message, bool error)
     {

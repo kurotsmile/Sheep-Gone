@@ -19,7 +19,7 @@ public class ManagerLevel : MonoBehaviour
         PlayerPrefs.SetInt("LengthLevel", length);
     }
 
-    public List<Dictionary<string,object>> GetListLevel()
+    public List<Dictionary<string, object>> GetListLevel()
     {
         List<Dictionary<string, object>> listData = new();
         for (int i = 0; i < this.length; i++)
@@ -31,5 +31,22 @@ public class ManagerLevel : MonoBehaviour
             }
         }
         return listData;
+    }
+    
+    public void DeleteItem(int index)
+    {
+        if (index < 0 || index >= length) return;
+        
+        PlayerPrefs.DeleteKey("data_level_" + index);
+        for (int i = index + 1; i < length; i++)
+        {
+            string nextKey = "data_level_" + i;
+            string newKey = "data_level_" + (i - 1);
+            PlayerPrefs.SetString(newKey, PlayerPrefs.GetString(nextKey, ""));
+            PlayerPrefs.DeleteKey(nextKey);
+        }
+        
+        length--;
+        PlayerPrefs.SetInt("LengthLevel", length);
     }
 }
