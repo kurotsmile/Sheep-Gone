@@ -66,5 +66,5 @@
     "explorer.fileNesting.patterns": {
         "*.sln": "*.csproj"
     },
-    "dotnet.defaultSolution": "Sheep Gone.sln"
+    "dotnet.defaultSolution": "Sheep-Gone.slnx"
 }
